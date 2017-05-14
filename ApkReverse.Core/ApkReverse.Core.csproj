@@ -37,6 +37,9 @@
     <Reference Include="Castle.Windsor, Version=3.4.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
@@ -50,14 +53,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApkUtils\AndroidManifestManager.cs" />
-    <Compile Include="ApkUtils\ResourceExtractor.cs" />
     <Compile Include="ApkUtils\ApkResourcesReader.cs" />
-    <Compile Include="ApkUtils\ResourcesModels\BaseHeader.cs" />
+    <Compile Include="ApkUtils\ResourcesModels\Headers\BaseHeader.cs" />
     <Compile Include="ApkUtils\ResourceParsingException.cs" />
-    <Compile Include="ApkUtils\ResourcesModels\StringPoolHeader.cs" />
-    <Compile Include="ApkUtils\ResourcesModels\TableHeader.cs" />
+    <Compile Include="ApkUtils\ResourcesModels\Headers\PackageHeader.cs" />
+    <Compile Include="ApkUtils\ResourcesModels\Headers\StringPoolHeader.cs" />
+    <Compile Include="ApkUtils\ResourcesModels\Headers\TableHeader.cs" />
+    <Compile Include="ApkUtils\ResourcesModels\StringPoolReader.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CoreResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CoreResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ReverseCoreInstaller.cs" />
     <Compile Include="Sevices\IAndroidManifestManager.cs" />
     <Compile Include="Sevices\IApkResourcesService.cs" />
@@ -81,6 +90,13 @@
   <ItemGroup>
     <Folder Include="ApkUtils\AndroidManifestModels\" />
     <Folder Include="SourcesTranslator\Java\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CoreResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CoreResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,4 @@
-namespace ApkReverse.Core.ApkUtils.ResourcesModels
+namespace ApkReverse.Core.ApkUtils.ResourcesModels.Headers
 {
     using System;
     using System.IO;
@@ -42,10 +42,19 @@ namespace ApkReverse.Core.ApkUtils.ResourcesModels
         public TableHeader(BinaryReader reader, BaseHeader header)
         {
             if (header.Type != BaseHeader.ChunkType.ResTable)
-                throw new ResourceParsingException($"Resources parse error: unexpected chunk type '{header.Type}', expecting '{BaseHeader.ChunkType.ResTable}' at offset { reader.BaseStream.Position - 1 }");
+                throw new ResourceParsingException(
+                    string.Format(
+                        CoreResources.ChunkTypeError,
+                        header.Type,
+                        BaseHeader.ChunkType.ResTable,
+                        reader.BaseStream.Position - 1));
 
             if(header.HeaderSize != 12)
-                throw new ResourceParsingException($"Resources parse error: unexpected chunk header size '{header.HeaderSize}, expecting 12");
+                throw new ResourceParsingException(
+                    string.Format(
+                        CoreResources.ChunkHeaderSizeError,
+                        header.HeaderSize, 
+                        12));
 
             this.Header = header;
             this.PackageCount = reader.ReadUInt32();
@@ -57,7 +66,7 @@ namespace ApkReverse.Core.ApkUtils.ResourcesModels
         /// <returns></returns>
         public override string ToString()
         {
-            return $"TableHeader: {this.Header}; PackagesCount {this.PackageCount}";
+            return string.Format(CoreResources.TableHeaderDebug, this.Header, this.PackageCount);
         }
     }
 }

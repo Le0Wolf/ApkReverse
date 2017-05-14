@@ -1,10 +1,14 @@
 ﻿namespace ApkReverse.Core
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.IO.Compression;
 
     using ApkUtils;
+
+    using JetBrains.Annotations;
+
     using Sevices;
 
     internal class Project : IProject
@@ -15,6 +19,7 @@
 
         private readonly IAndroidManifestManager _androidManifestManager;
 
+        [CanBeNull]
         public IDisplayService DisplayService;//Castle Windsor initialization
 
         public string ResourceFilePath { get; private set; }
@@ -66,7 +71,8 @@
                 {
                     if (fileSystemInfo.Name == this.ResourcesSubDir) continue;
 
-                    this.DisplayService?.WriteMsg($"Move {fileSystemInfo.Name} to {Path.Combine(this.OriginalFilesSubDir, fileSystemInfo.Name)}");
+                    this.DisplayService?.WriteMsg(
+                        $"Move {fileSystemInfo.Name} to {Path.Combine(this.OriginalFilesSubDir, fileSystemInfo.Name)}");
 
                     Directory.Move(fileSystemInfo.FullName, Path.Combine(this._projectPath, this.OriginalFilesSubDir, fileSystemInfo.Name));
                 }
@@ -95,8 +101,7 @@
                     }
                     else
                     {
-                        this.DisplayService?.WriteMsg(
-                            $"Move {fileSystemInfo.Name} to dir {this.OriginalFilesSubDir}");
+                        this.DisplayService?.WriteMsg($"Move {fileSystemInfo.Name} to dir {this.OriginalFilesSubDir}");
 
                         File.Move(
                             fileSystemInfo.FullName,
@@ -130,7 +135,7 @@
         /// <param name="resFilePath"></param>
         public void ExtractResources(string resFilePath)
         {
-            this.ResourcesTable = ResourceExtractor.Extact(resFilePath, Path.Combine(this._projectPath, this.ResourcesSubDir));
+            //this.ResourcesTable = ApkResourcesManager.Extact(resFilePath, Path.Combine(this._projectPath, this.ResourcesSubDir));
         }
 
         /// <summary>

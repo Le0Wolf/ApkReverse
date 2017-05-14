@@ -1,4 +1,4 @@
-﻿namespace ApkReverse.Core.ApkUtils.ResourcesModels
+﻿namespace ApkReverse.Core.ApkUtils.ResourcesModels.Headers
 {
     using System;
     using System.IO;
@@ -60,7 +60,8 @@
         {
             var type = reader.ReadUInt16();
             if (!Enum.IsDefined(typeof(ChunkType), type))
-                throw new ResourceParsingException($"Unknown chunk type {type} at offset {reader.BaseStream.Position - 1}");
+                throw new ResourceParsingException(
+                    string.Format(CoreResources.UnknownChunkTypeError, type, reader.BaseStream.Position - 1));
 
             this.Type = (ChunkType)type;
             this.HeaderSize = reader.ReadUInt16();
@@ -73,7 +74,11 @@
         /// <returns></returns>
         public override string ToString()
         {
-            return $"Base header: Type {this.Type}, HeaderSize {this.HeaderSize}, Size {this.Size}";
+            return string.Format(
+                CoreResources.BaseHeaderDebug,
+                this.Type,
+                this.HeaderSize,
+                this.Size);
         }
     }
 }

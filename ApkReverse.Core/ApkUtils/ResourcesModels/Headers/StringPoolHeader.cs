@@ -1,4 +1,4 @@
-﻿namespace ApkReverse.Core.ApkUtils.ResourcesModels
+﻿namespace ApkReverse.Core.ApkUtils.ResourcesModels.Headers
 {
     using System;
     using System.IO;
@@ -25,12 +25,12 @@
         /// <summary>
         /// Count of uint values of strings offset
         /// </summary>
-        public uint StringCount;
+        public uint StringsCount;
 
         /// <summary>
         /// Count of uint values of styles offset
         /// </summary>
-        public uint StyleCount;
+        public uint StylesCount;
 
         /// <summary>
         /// Flags types
@@ -74,21 +74,31 @@
             var header = new BaseHeader(reader);
 
             if (header.Type != BaseHeader.ChunkType.StringPool)
-                throw new ResourceParsingException($"Resources parse error: unexpected chunk type '{header.Type}', expecting '{BaseHeader.ChunkType.StringPool}' at offset {reader.BaseStream.Position - 1}");
+                throw new ResourceParsingException(
+                    string.Format(
+                        CoreResources.ChunkTypeError,
+                        header.Type,
+                        BaseHeader.ChunkType.StringPool,
+                        reader.BaseStream.Position - 1));
 
             if (header.HeaderSize != 0x001c)
-                throw new ResourceParsingException($"Resources parse error: unexpected chunk header size '{header.HeaderSize}, expecting {0x001c}");
+                throw new ResourceParsingException(
+                    string.Format(
+                        CoreResources.ChunkHeaderSizeError,
+                        header.HeaderSize,
+                        0x001c));
 
             this.Header = header;
-            this.StringCount = reader.ReadUInt32();
-            this.StyleCount = reader.ReadUInt32();
+            this.StringsCount = reader.ReadUInt32();
+            this.StylesCount = reader.ReadUInt32();
 
             var flags = (FlagType)reader.ReadUInt32();
 
             if (flags != 0 && flags != FlagType.SortedFlag
                 && flags != FlagType.Utf8Flag
                 && flags != (FlagType.SortedFlag | FlagType.Utf8Flag))
-                throw new ResourceParsingException($"Resources parse error: unexpected flag value: {flags}, expecting '{FlagType.Utf8Flag}', '{FlagType.SortedFlag}'");
+                throw new ResourceParsingException(
+                    string.Format(CoreResources.StringPoolFlagsError, flags, FlagType.Utf8Flag, FlagType.SortedFlag));
 
             this.Flags = flags;
             this.StringsStart = reader.ReadUInt32();
@@ -101,8 +111,14 @@
         /// <returns></returns>
         public override string ToString()
         {
-            return
-                $"String pool header: {this.Header}; Flags {this.Flags}, StringsCount {this.StringCount}, StringsStart {this.StringsStart}, StyleCount {this.StyleCount}, StyleStart {this.StylesStart}";
+            return string.Format(
+                CoreResources.StringPoolDebug,
+                this.Header,
+                this.Flags,
+                this.StringsCount,
+                this.StringsStart,
+                this.StylesCount,
+                this.StylesStart);
         }
     };
 }
